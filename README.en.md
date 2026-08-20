@@ -31,10 +31,10 @@ npm test
 npm run dev:web
 # open http://127.0.0.1:5180/src/renderer/map.html
 
-# Windows only (requires Rust + VS Build Tools + WebView2 + Tauri CLI):
+# Windows only (requires Rust + VS Build Tools + Node.js):
 npm install
 npm run dev        # Tauri desktop dev build
-npm run build      # Windows NSIS installer
+npm run build      # Windows portable EXE (single, install-free)
 ```
 
 `npm run dev:web` uses the zero-dependency `scripts/dev-server.js` to serve the repository root. `map.html` degrades gracefully in a normal browser via `tauri-bridge.js`, so you do not need Tauri dependencies on Linux to develop the UI.
@@ -74,6 +74,19 @@ The artifact `artifacts/release-v<version>/IronNestFCT_internal_v<version>.zip` 
 - `UserData/IronNestFCS/IronNestFCS.Logic.dll` (fire-control logic)
 
 Users extract the ZIP and merge the `Mods` / `UserData` / `UserLibs` folders into the game root.
+
+### External UI deployment (portable EXE)
+
+The external terminal is packaged as an **install-free, portable single-file EXE** (Tauri 2, `bundle.active: false`, frontend assets embedded at compile time):
+
+```bat
+# Run on Windows (repository root):
+打包exe.bat
+```
+
+- Artifact: `artifacts/IronNestFCT.exe` (single file, double-click to run, no installation).
+- Target machines need the WebView2 runtime (preinstalled with Edge on Windows 10/11).
+- Frontend assets are embedded at compile time; no `tauri-dist/` folder is needed at runtime.
 
 ## Sources and acknowledgments
 

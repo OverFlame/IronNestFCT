@@ -29,10 +29,10 @@ npm test
 npm run dev:web
 # 打开 http://127.0.0.1:5180/src/renderer/map.html
 
-# 仅 Windows（需 Rust + VS Build Tools + WebView2 + Tauri CLI）：
+# 仅 Windows（需 Rust + VS Build Tools + Node.js）：
 npm install
 npm run dev        # Tauri 桌面开发版
-npm run build      # Windows NSIS 安装包
+npm run build      # Windows 便携 exe（免安装单文件）
 ```
 
 `npm run dev:web` 用零依赖的 `scripts/dev-server.js` 静态服务仓库根目录，`map.html` 通过 `tauri-bridge.js` 的无 Tauri 降级在普通浏览器中正常工作，因此 Linux 上无需安装 Tauri 依赖即可开发 UI。
@@ -72,6 +72,19 @@ powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steam
 - `UserData/IronNestFCS/IronNestFCS.Logic.dll`（火控逻辑）
 
 用户只需解压 zip，把 `Mods` / `UserData` / `UserLibs` 三个文件夹合并进游戏根目录。
+
+### 外部 UI 部署（便携 exe）
+
+外部终端打包为**免安装便携单文件 exe**（Tauri 2，`bundle.active: false`，前端资源已内嵌进二进制）：
+
+```bat
+# 在 Windows 上执行（根目录）：
+打包exe.bat
+```
+
+- 产物：`artifacts/IronNestFCT.exe`（单一文件，双击即用，无需安装）。
+- 目标机器需 WebView2 运行时（Windows 10/11 已随 Edge 预装）。
+- 前端资源在编译期内嵌，运行时无需 `tauri-dist/` 目录。
 
 ## 来源与鸣谢
 
