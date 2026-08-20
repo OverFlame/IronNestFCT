@@ -83,6 +83,7 @@ powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steam
 ```
 
 - 产物：`artifacts/IronNestFCT.exe`（单一文件，双击即用，无需安装）。
+- 打包机需先装 Rust（[rustup.rs](https://rustup.rs)，选 MSVC 工具链）+ VS Build Tools（“使用 C++ 的桌面开发”负载）+ Node.js；缺 Rust 时 `打包exe.bat` 会给出提示。
 - 目标机器需 WebView2 运行时（Windows 10/11 已随 Edge 预装）。
 - 前端资源在编译期内嵌，运行时无需 `tauri-dist/` 目录。
 

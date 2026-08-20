@@ -85,6 +85,7 @@ The external terminal is packaged as an **install-free, portable single-file EXE
 ```
 
 - Artifact: `artifacts/IronNestFCT.exe` (single file, double-click to run, no installation).
+- The build machine needs Rust ([rustup.rs](https://rustup.rs), MSVC toolchain) + VS Build Tools ("Desktop development with C++") + Node.js; `打包exe.bat` prints a hint when Rust is missing.
 - Target machines need the WebView2 runtime (preinstalled with Edge on Windows 10/11).
 - Frontend assets are embedded at compile time; no `tauri-dist/` folder is needed at runtime.
 

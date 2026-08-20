@@ -61,8 +61,8 @@ function Resolve-GameDir {
 
 $GameDir = Resolve-GameDir -Explicit $GameDir
 
-# Build only the fire-control projects. CustomRecords (the unrelated record-player mod)
-# requires external NuGet packages and is intentionally excluded from packaging.
+# Build only the three fire-control projects. The unrelated CustomRecords record-player
+# mod has been removed from this fork and is not part of the internal mod release.
 $AbstractionsProject = Join-Path $RepoRoot "IronNestFCS.Abstractions\IronNestFCS.Abstractions.csproj"
 $HostProject = Join-Path $RepoRoot "IronNestFCS\IronNestFCS.csproj"
 $LogicProject = Join-Path $RepoRoot "IronNestFCS.Logic\IronNestFCS.Logic.csproj"
