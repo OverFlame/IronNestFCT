@@ -1,0 +1,69 @@
+name: build-windows-exe
+
+# 云端编译外部炮控终端为免安装便携单文件 exe（无需本地安装 Rust）。
+# 手动触发：Actions -> "build-windows-exe" -> Run workflow。
+# 打 tag（v*）时也会自动触发并发布到 GitHub Release。
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build Windows portable EXE
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Rust (stable, MSVC)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      # npm run build = tauri build；bundle.active=false，只产出便携 exe（前端资源内嵌）。
+      - name: Build portable EXE
+        run: npm run build
+
+      - name: Prepare artifact
+        shell: pwsh
+        run: |
+          $exe = "src-tauri\target\release\ironnestfct.exe"
+          if (-not (Test-Path $exe)) { throw "EXE not found: $exe" }
+          Copy-Item $exe "IronNestFCT.exe"
+          $hash = (Get-FileHash "IronNestFCT.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  IronNestFCT.exe" | Out-File -Encoding ascii "SHA256SUMS.txt"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IronNestFCT-windows-exe
+          path: |
+            IronNestFCT.exe
+            SHA256SUMS.txt
+          if-no-files-found: error
+
+      - name: Publish to GitHub Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            IronNestFCT.exe
+            SHA256SUMS.txt

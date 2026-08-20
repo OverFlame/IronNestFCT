@@ -77,7 +77,13 @@ Users extract the ZIP and merge the `Mods` / `UserData` / `UserLibs` folders int
 
 ### External UI deployment (portable EXE)
 
-The external terminal is packaged as an **install-free, portable single-file EXE** (Tauri 2, `bundle.active: false`, frontend assets embedded at compile time):
+The external terminal is packaged as an **install-free, portable single-file EXE** (Tauri 2, `bundle.active: false`, frontend assets embedded at compile time).
+
+**Option A: GitHub Actions cloud build (recommended, zero local Rust)**
+
+No local Rust needed: trigger the `build-windows-exe` workflow manually from the repo's Actions tab (or push a `v*` tag), then download `IronNestFCT.exe` from the run's Artifacts (a tag also publishes it to GitHub Releases).
+
+**Option B: local build (requires Rust)**
 
 ```bat
 # Run on Windows (repository root):
@@ -86,6 +92,8 @@ The external terminal is packaged as an **install-free, portable single-file EXE
 
 - Artifact: `artifacts/IronNestFCT.exe` (single file, double-click to run, no installation).
 - The build machine needs Rust ([rustup.rs](https://rustup.rs), MSVC toolchain) + VS Build Tools ("Desktop development with C++") + Node.js; `打包exe.bat` prints a hint when Rust is missing.
+
+Both options produce `IronNestFCT.exe`:
 - Target machines need the WebView2 runtime (preinstalled with Edge on Windows 10/11).
 - Frontend assets are embedded at compile time; no `tauri-dist/` folder is needed at runtime.
 
