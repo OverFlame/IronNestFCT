@@ -1,5 +1,5 @@
 [package]
-name = "iron-nest-fire-control-terminal"
+name = "ironnestfct"
 version = "2.9.1"
 edition = "2021"
 rust-version = "1.77.2"

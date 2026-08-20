@@ -1,0 +1,32 @@
+IronNestFCT 内部火控 Mod（内置内外火控桥接）
+
+简体中文
+========
+1. 安装适用于 IL2CPP 的 MelonLoader（已装可跳过）。
+2. 将本压缩包内容直接解压到游戏根目录，允许合并以下三个文件夹：
+   - Mods/                          → 宿主 Mod（IronNestFCS.dll）
+   - UserLibs/                      → 契约程序集（IronNestFCS.Abstractions.dll）
+   - UserData/IronNestFCS/          → 火控逻辑（IronNestFCS.Logic.dll）
+3. 启动游戏。Mod 会自动监听 http://127.0.0.1:37841（端口被占用则顺延）。
+4. 打开外部炮控终端，在「内部火控联动」面板点击「连接」，然后「同步射击计划」。
+
+说明：
+- 无需改 GameDir、无需重新编译；解压即用。
+- 详细火控 UI（游戏内 IMGUI）暂留空，状态由外部终端显示。
+- F9 重新加载火控逻辑（不影响已接受的物理装填）。
+
+English
+=======
+1. Install MelonLoader for IL2CPP (skip if already installed).
+2. Extract this archive into the game root directory, merging:
+   - Mods/                          -> Host mod (IronNestFCS.dll)
+   - UserLibs/                      -> ABI contract (IronNestFCS.Abstractions.dll)
+   - UserData/IronNestFCS/          -> fire-control logic (IronNestFCS.Logic.dll)
+3. Start the game. The mod listens on http://127.0.0.1:37841 (falls through if taken).
+4. In the external terminal, open the "Internal fire-control linkage" panel,
+   click "Connect", then "Sync fire plan".
+
+Notes:
+- No GameDir editing and no recompilation required.
+- The in-game detailed FCS UI (IMGUI) is left blank for now; status is shown by the terminal.
+- F9 reloads the fire-control logic without disturbing accepted physical loading.
