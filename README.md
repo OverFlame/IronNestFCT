@@ -75,7 +75,13 @@ powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steam
 
 ### 外部 UI 部署（便携 exe）
 
-外部终端打包为**免安装便携单文件 exe**（Tauri 2，`bundle.active: false`，前端资源已内嵌进二进制）：
+外部终端打包为**免安装便携单文件 exe**（Tauri 2，`bundle.active: false`，前端资源已内嵌进二进制）。
+
+**方式 A：GitHub Actions 云端编译（推荐，本地零 Rust）**
+
+无需本地安装 Rust：在仓库 Actions 页手动触发 `build-windows-exe` 工作流（或打 `v*` tag），云端编译完成后在「Artifacts」下载 `IronNestFCT.exe`（打 tag 则直接发布到 GitHub Release）。
+
+**方式 B：本地打包（需 Rust）**
 
 ```bat
 # 在 Windows 上执行（根目录）：
@@ -83,6 +89,9 @@ powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steam
 ```
 
 - 产物：`artifacts/IronNestFCT.exe`（单一文件，双击即用，无需安装）。
+- 打包机需先装 Rust（[rustup.rs](https://rustup.rs)，选 MSVC 工具链）+ VS Build Tools（“使用 C++ 的桌面开发”负载）+ Node.js；缺 Rust 时 `打包exe.bat` 会给出提示。
+
+两种方式的产物均为 `IronNestFCT.exe`：
 - 目标机器需 WebView2 运行时（Windows 10/11 已随 Edge 预装）。
 - 前端资源在编译期内嵌，运行时无需 `tauri-dist/` 目录。
 

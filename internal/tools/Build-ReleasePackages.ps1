@@ -61,16 +61,24 @@ function Resolve-GameDir {
 
 $GameDir = Resolve-GameDir -Explicit $GameDir
 
-$Solution = Join-Path $RepoRoot "IronNestFCS.sln"
+# Build only the three fire-control projects. The unrelated CustomRecords record-player
+# mod has been removed from this fork and is not part of the internal mod release.
+$AbstractionsProject = Join-Path $RepoRoot "IronNestFCS.Abstractions\IronNestFCS.Abstractions.csproj"
+$HostProject = Join-Path $RepoRoot "IronNestFCS\IronNestFCS.csproj"
+$LogicProject = Join-Path $RepoRoot "IronNestFCS.Logic\IronNestFCS.Logic.csproj"
+
 $HostDll = Join-Path $RepoRoot "IronNestFCS\bin\$Configuration\IronNestFCS.dll"
 $AbstractionsDll = Join-Path $RepoRoot "IronNestFCS.Abstractions\bin\$Configuration\IronNestFCS.Abstractions.dll"
 # IronNestFCS.Logic.csproj outputs directly to the game's UserData\IronNestFCS directory.
 $LogicDll = Join-Path $GameDir "UserData\IronNestFCS\IronNestFCS.Logic.dll"
 
 Write-Host "Building internal mod v$Version against: $GameDir"
-& dotnet build $Solution -c $Configuration "-p:GameDir=$GameDir"
-if ($LASTEXITCODE -ne 0) {
-    throw "dotnet build failed with exit code $LASTEXITCODE"
+foreach ($project in @($AbstractionsProject, $HostProject, $LogicProject)) {
+    Write-Host "  dotnet build $(Split-Path -Leaf $project)"
+    & dotnet build $project -c $Configuration "-p:GameDir=$GameDir"
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet build failed for $project with exit code $LASTEXITCODE"
+    }
 }
 
 foreach ($path in @($HostDll, $AbstractionsDll, $LogicDll)) {
