@@ -3,18 +3,20 @@
 An **internal + external fire control** integration project for *Iron Nest: Heavy Turret Simulator*:
 
 - **External fire-control terminal** (this directory): tactical map + cross-bearing positioning + briefing import + ballistics / TOT / moving-target / train solutions + master fire plan. It can be launched standalone for offline calculation experiments, and also serves as the front end for in-game automatic fire control.
-- **Internal fire-control mod** (to be added later): MelonLoader in-game automation (solving, loading, aiming, firing).
+- **Internal fire-control mod** (`internal/`, derived from IronNestFCS-Smart): MelonLoader in-game automation (solving, loading, aiming, firing) that receives fire plans from the external terminal over a local HTTP + SSE bridge.
 
 ## Directory structure
 
 ```text
 src/shared/            Pure functions and shared config (ballistics, coordinates,
-                       positioning, TOT, intercept, derivation)
+                       positioning, TOT, intercept, derivation, bridge client)
 src/renderer/map.html  Main terminal UI (shared by Tauri desktop and browser)
 index.html             Standalone elevation quick-calc page (mobile/browser)
 overlay.html           Read-only master fire plan overlay window
 src-tauri/             Tauri 2 desktop shell (Windows release build only)
 tests/unit/            Unit tests for formulas and pure functions
+internal/              Internal fire-control mod (MelonLoader, derived from
+                       IronNestFCS-Smart + bridge)
 ```
 
 ## Cross-platform development
@@ -41,6 +43,17 @@ npm run build      # Windows NSIS installer
 
 - **Chained derivation auto-refresh**: when a target is located relative to a "point" (an observer or another target), its derivation dependency is recorded. After that point's coordinate is manually corrected, targets depending on it are re-solved automatically and the refresh cascades along the dependency chain.
 - **Destroyed-target archive**: destroying a target no longer deletes it. It is kept semi-transparent and archived into the "destroyed" column in destruction order, persisted the same way as normal targets.
+- **Internal/external fire-control bridge**: the external terminal's "sync fire plan" action is sent over local HTTP to the in-game mod, which auto-loads/aims/fires; the mod streams gun state, queue and plan progress back over SSE.
+
+## Internal fire-control bridge (HTTP + SSE)
+
+- The mod (`internal/`) listens on `127.0.0.1:37841` (falls through to 37842… if the port is taken).
+- Endpoints: `GET /ping` (discovery), `GET /events` (SSE status stream), `POST /command` (commands).
+- Commands: `sync` (push/replace fire plan), `clear` (clear plan), `autofire` (toggle auto fire).
+- Events: `status` (bind state, per-gun physical state, turret azimuth, pending count, plan progress).
+- **AutoFire timed firing**: train / moving / TOT tasks fire on a relative countdown (`fireAtSec` seconds after receipt). The in-game mission clock is not located yet, so absolute-time alignment is reserved as a later hook.
+- **Time-sensitive priority preemption queue**: pending tasks are ordered by (fire deadline, priority) ascending; only **not-yet-started** tasks are reordered, and tasks already loading/aiming/firing are not interrupted.
+- The original in-game detailed FCS UI (IMGUI) is **left blank for now**; status is shown by the external terminal.
 
 ## Sources and acknowledgments
 

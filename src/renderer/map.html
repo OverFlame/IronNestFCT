@@ -262,6 +262,13 @@
     .destroyed-item .destroyed-name { flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-weight:800; }
     .destroyed-item .destroyed-coordinate { color:#8b968b; font-size:9px; font-variant-numeric:tabular-nums; }
     .destroyed-item button { height:24px; padding:0 6px; font-size:9px; }
+    .bridge-toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .bridge-toolbar button { height:30px; font-size:11px; }
+    .bridge-toolbar .primary-action { color:var(--accent-soft); border-color:rgba(230,184,79,.55); }
+    .bridge-status { padding:3px 8px; border:1px solid var(--line); border-radius:999px; font-size:10px; font-weight:800; }
+    .bridge-status.on { color:#8ff0a0; border-color:rgba(133,198,145,.6); background:rgba(133,198,145,.12); }
+    .bridge-status.off { color:var(--muted); }
+    .bridge-status .dot { display:inline-block; width:6px; height:6px; margin-right:4px; border-radius:50%; background:currentColor; }
     #initializeButton { margin-top:7px; color:#ff9a88; border-color:rgba(228,123,103,.62); }
     @media(max-width:1100px){ .workspace{grid-template-columns:340px minmax(0,1fr)} .tactical-card-grid{grid-template-columns:1fr} }
     @media(max-width:900px){ .ballistic-grid,.fire-layout,.dual-fire-grid,.briefing-import-grid,.impact-correction-card,.tot-grid,.tot-settings{grid-template-columns:1fr} .aoe-radius-table{grid-template-columns:repeat(2,minmax(0,1fr))} .briefing-actions{grid-template-columns:1fr 1fr} .master-plan-toolbar{grid-template-columns:1fr 1fr} .master-plan-toolbar label{grid-column:1/-1} .scope{display:none} #importBriefing,#clearBriefing{height:34px} }
@@ -322,6 +329,18 @@
       </aside>
 
       <main class="function-area" aria-label="正式功能区">
+        <section class="function-card" aria-label="内部火控联动">
+          <div class="section-heading"><h2>内部火控联动</h2><span id="bridgeStatusNote" class="section-note">离线</span></div>
+          <div class="bridge-toolbar">
+            <span id="bridgeStatus" class="bridge-status off">离线</span>
+            <button id="bridgeConnect" type="button">连接</button>
+            <label class="aoe-toggle"><input id="bridgeAutoFire" type="checkbox">自动开火</label>
+            <button id="syncToBridge" class="primary-action" type="button">同步射击计划</button>
+            <button id="clearBridge" type="button">清空内部火控</button>
+          </div>
+          <div id="bridgeSnapshot" class="section-note">尚未连接内部火控；游戏内 mod 启动后点击“连接”，或自动探测。</div>
+        </section>
+
         <section class="function-card" aria-label="简报坐标导入">
           <div class="section-heading"><h2>粘贴简报坐标</h2><span class="section-note">粘贴后自动录入</span></div>
           <div class="briefing-import-grid">
@@ -580,6 +599,7 @@
   <script src="../shared/moving-intercept.js?v=2.8.14"></script>
   <script src="../shared/rail-intercept.js?v=2.8.47"></script>
   <script src="../shared/derivation.js"></script>
+  <script src="../shared/bridge.js"></script>
   <script src="../shared/tauri-bridge.js"></script>
   <script>
     (() => {
@@ -597,6 +617,7 @@
       const movingIntercept = window.IronNestMovingIntercept;
       const railIntercept = window.IronNestRailIntercept;
       const derivation = window.IronNestDerivation;
+      const bridge = window.IronNestBridge;
       const canvas = document.querySelector('#mapCanvas');
       const ctx = canvas.getContext('2d');
       const precisionMapModal = document.querySelector('#precisionMapModal');
@@ -766,7 +787,11 @@
         showPlanAoe: false,
         flashingTargetIds: [],
         cardOrder: [],
-        nextDestroyOrder: 1
+        nextDestroyOrder: 1,
+        bridgeOnline: false,
+        bridgePort: null,
+        bridgeSnapshot: null,
+        bridgeAutoFire: false
       };
       const precisionEditor = {
         targetId: null,
@@ -1435,7 +1460,8 @@
               interceptCoordinate: trainCoordinateText(side.shot.impactPoint),
               targetCoordinate: trainCoordinateText(side.shot.impactPoint),
               interceptTargetLabel: label,
-              trainIntercept: true
+              trainIntercept: true,
+              computedAtMs: Date.now()
             };
           });
           plans.forEach((item, index) => state.firePlans[sides[index].gunId].push(item));
@@ -2211,7 +2237,8 @@
               interceptCoordinate: coordinateForPoint(side.shot.impactPoint),
               targetCoordinate: coordinateForPoint(side.shot.impactPoint),
               interceptTargetId: side.track.id,
-              interceptTargetLabel: side.track.label
+              interceptTargetLabel: side.track.label,
+              computedAtMs: Date.now()
             };
           });
           plans.forEach((item, index) => state.firePlans[sides[index].gunId].push(item));
@@ -2433,7 +2460,8 @@
               targetCoordinate: coordinateForPoint(target),
               totMissionId: missionId,
               totFireAtSec: Number(side.fireAtSec.toFixed(1)),
-              totImpactAtSec: Number(preview.result.impactAtSec.toFixed(1))
+              totImpactAtSec: Number(preview.result.impactAtSec.toFixed(1)),
+              computedAtMs: Date.now()
             };
           };
           const leftItem = createItem('gun-a', 'left', preview.leftTarget, preview.leftShellType);
@@ -4612,6 +4640,157 @@
       initializeBallisticPanels();
       initializeShortcutBindings();
       new ResizeObserver(resize).observe(stage);
+
+      // ---- 内部火控桥接联动 ----
+      function remainingFireSec(fireAtSec, computedAtMs) {
+        if (!Number.isFinite(Number(fireAtSec))) return null;
+        const elapsed = Number.isFinite(Number(computedAtMs)) ? (Date.now() - Number(computedAtMs)) / 1000 : 0;
+        return Math.max(0, Number(fireAtSec) - elapsed);
+      }
+
+      function buildBridgeSchedule() {
+        const tasks = state.masterFirePlans.map(item => {
+          const task = {
+            id: String(item.id),
+            kind: 'static',
+            bearingDeg: Number(item.bearingDeg),
+            distanceKm: Number(item.distanceKm),
+            shellType: item.shellType || 'HE',
+            charge: Number.isInteger(Number(item.charge)) ? Number(item.charge) : null,
+            fireAtSec: null,
+            priority: 0
+          };
+          if (item.totMissionId != null) {
+            task.kind = 'tot';
+            task.fireAtSec = remainingFireSec(item.totFireAtSec, item.computedAtMs);
+          } else if (item.interceptMissionId != null) {
+            task.kind = item.trainIntercept ? 'train' : 'moving';
+            task.fireAtSec = remainingFireSec(item.interceptFireAtSec, item.computedAtMs);
+          }
+          return task;
+        });
+        return { type: 'sync', scheduleId: `schedule-${Date.now()}`, autofire: true, tasks };
+      }
+
+      function initBridgeLinkage() {
+        const bridgeStatus = document.querySelector('#bridgeStatus');
+        const bridgeStatusNote = document.querySelector('#bridgeStatusNote');
+        const bridgeConnectButton = document.querySelector('#bridgeConnect');
+        const bridgeAutoFireInput = document.querySelector('#bridgeAutoFire');
+        const syncToBridgeButton = document.querySelector('#syncToBridge');
+        const clearBridgeButton = document.querySelector('#clearBridge');
+        const bridgeSnapshotEl = document.querySelector('#bridgeSnapshot');
+        let bridgeEventSource = null;
+
+        function renderBridgeStatus() {
+          const online = state.bridgeOnline;
+          bridgeStatus.className = 'bridge-status ' + (online ? 'on' : 'off');
+          bridgeStatus.innerHTML = `<span class="dot"></span>${online ? `在线 :${state.bridgePort}` : '离线'}`;
+          bridgeStatusNote.textContent = online ? `在线 · 端口 ${state.bridgePort}` : '离线';
+          bridgeConnectButton.textContent = online ? '断开' : '连接';
+          syncToBridgeButton.disabled = !online;
+          clearBridgeButton.disabled = !online;
+          bridgeAutoFireInput.disabled = !online;
+
+          const snapshot = state.bridgeSnapshot;
+          if (!snapshot) {
+            bridgeSnapshotEl.textContent = online ? '已连接，等待状态回传…' : '尚未连接内部火控；游戏内 mod 启动后点击“连接”，或等待自动探测。';
+            return;
+          }
+          const left = snapshot.left ? `${snapshot.left.kind}${snapshot.left.shell ? ' ' + snapshot.left.shell : ''} C${snapshot.left.charges}` : '—';
+          const right = snapshot.right ? `${snapshot.right.kind}${snapshot.right.shell ? ' ' + snapshot.right.shell : ''} C${snapshot.right.charges}` : '—';
+          const plans = Array.isArray(snapshot.plans) ? snapshot.plans.map(plan => `${plan.side === 'Left' ? '左' : '右'}${plan.progress}${plan.fireDeadlineSec != null ? `(${Math.max(0, plan.fireDeadlineSec).toFixed(1)}s)` : ''}`).join(' · ') : '';
+          bridgeSnapshotEl.textContent = `绑定=${snapshot.bound} · 自动开火=${snapshot.autofire} · 左[${left}] · 右[${right}] · 待派发 ${snapshot.pending}${plans ? ' · ' + plans : ''}`;
+        }
+
+        function handleBridgeEvent(event) {
+          try {
+            const data = JSON.parse(event.data);
+            if (data && data.type === 'status') {
+              state.bridgeSnapshot = data;
+              if (typeof data.autofire === 'boolean') {
+                state.bridgeAutoFire = data.autofire;
+                bridgeAutoFireInput.checked = data.autofire;
+              }
+              renderBridgeStatus();
+            }
+          } catch { /* ignore malformed events */ }
+        }
+
+        function closeBridge() {
+          if (bridgeEventSource) { bridgeEventSource.close(); bridgeEventSource = null; }
+          state.bridgeOnline = false;
+          state.bridgePort = null;
+          state.bridgeSnapshot = null;
+          renderBridgeStatus();
+        }
+
+        async function connectBridge() {
+          if (state.bridgeOnline) { closeBridge(); return; }
+          try {
+            const info = await bridge.discover();
+            if (!info) {
+              bridgeSnapshotEl.textContent = '未发现内部火控（游戏内 mod 未启动或桥接端口未开放）。';
+              renderBridgeStatus();
+              return;
+            }
+            state.bridgeOnline = true;
+            state.bridgePort = info.port;
+            bridgeEventSource = bridge.openEvents(info.port);
+            bridgeEventSource.onmessage = handleBridgeEvent;
+            bridgeEventSource.onerror = () => {
+              closeBridge();
+              bridgeSnapshotEl.textContent = '与内部火控的连接中断。';
+            };
+            renderBridgeStatus();
+          } catch {
+            bridgeSnapshotEl.textContent = '连接失败。';
+          }
+        }
+
+        async function sendSyncToBridge() {
+          if (!state.bridgeOnline || state.bridgePort == null) return;
+          try {
+            await bridge.sendCommand(state.bridgePort, buildBridgeSchedule());
+            bridgeSnapshotEl.textContent = '已同步射击计划到内部火控（AutoFire 定时开火）。';
+          } catch {
+            bridgeSnapshotEl.textContent = '同步失败，请重试。';
+          }
+        }
+
+        async function sendClearToBridge() {
+          if (!state.bridgeOnline || state.bridgePort == null) return;
+          try {
+            await bridge.sendCommand(state.bridgePort, { type: 'clear' });
+            bridgeSnapshotEl.textContent = '已清空内部火控任务计划。';
+          } catch {
+            bridgeSnapshotEl.textContent = '清空失败，请重试。';
+          }
+        }
+
+        async function sendAutoFireToBridge(enabled) {
+          if (!state.bridgeOnline || state.bridgePort == null) return;
+          try {
+            await bridge.sendCommand(state.bridgePort, { type: 'autofire', autofire: enabled });
+          } catch { /* ignore */ }
+        }
+
+        bridgeConnectButton.addEventListener('click', connectBridge);
+        syncToBridgeButton.addEventListener('click', sendSyncToBridge);
+        clearBridgeButton.addEventListener('click', sendClearToBridge);
+        bridgeAutoFireInput.addEventListener('change', () => {
+          state.bridgeAutoFire = bridgeAutoFireInput.checked;
+          sendAutoFireToBridge(state.bridgeAutoFire);
+        });
+
+        // 离线时每 3 秒自动探测一次。
+        setInterval(() => {
+          if (!state.bridgeOnline) connectBridge();
+        }, 3000);
+
+        renderBridgeStatus();
+      }
+
       window.desktop?.ready?.();
     })();
   </script>
