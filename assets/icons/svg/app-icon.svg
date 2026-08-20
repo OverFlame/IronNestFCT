@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">铁巢炮控终端</title>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="72%">
+      <stop offset="0" stop-color="#1d352d"/>
+      <stop offset="1" stop-color="#07100d"/>
+    </radialGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c4f2ed"/>
+      <stop offset=".45" stop-color="#70c8d1"/>
+      <stop offset="1" stop-color="#277a91"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0a3"/>
+      <stop offset="1" stop-color="#d69a2d"/>
+    </linearGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#bg)" stroke="#3a776c" stroke-width="8"/>
+  <circle cx="128" cy="128" r="92" fill="none" stroke="#e7b94f" stroke-width="5" opacity=".82"/>
+  <path d="M128 28v33M128 195v33M28 128h33M195 128h33" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M128 46v164M46 128h164" fill="none" stroke="#e7b94f" stroke-width="2" opacity=".5"/>
+  <g stroke="#164d5c" stroke-linejoin="round">
+    <path d="m98 122 53-51 12 12-52 52z" fill="url(#steel)" stroke-width="6"/>
+    <path d="m119 142 49-36 10 14-49 37z" fill="url(#steel)" stroke-width="6"/>
+    <path d="M78 113 128 86l50 27v56l-50 29-50-29z" fill="url(#steel)" stroke-width="7"/>
+    <path d="M90 122h76v39H90z" fill="#5caebe" stroke-width="5"/>
+    <path d="M100 159h56" fill="none" stroke="#bff0eb" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="128" cy="141" r="13" fill="#173f4b" stroke="#b9ebe6" stroke-width="4"/>
+  </g>
+  <path d="M128 185 146 211h-36z" fill="url(#gold)" stroke="#805d1f" stroke-width="4" stroke-linejoin="round"/>
+</svg>

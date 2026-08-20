@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>铁巢总射击计划</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b100d; --panel:#151e18; --line:#344238; --text:#f1f3e8; --muted:#94a096; --accent:#d9c5ff; --left:#9ecbff; --right:#ffb49d; }
+    * { box-sizing:border-box; }
+    html, body { width:100%; height:100%; }
+    body { margin:0; overflow:hidden; color:var(--text); background:linear-gradient(145deg,#151e18,var(--bg)); font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; user-select:none; }
+    .app { display:grid; grid-template-rows:39px 1fr; width:100%; height:100%; border:1px solid #54496b; }
+    .titlebar { display:flex; align-items:center; gap:9px; padding-left:12px; border-bottom:1px solid var(--line); background:rgba(0,0,0,.22); -webkit-app-region:drag; }
+    .mark { width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px rgba(217,197,255,.75); }
+    .title { font-size:14px; font-weight:900; }
+    .count { color:var(--muted); font-size:11px; }
+    .spacer { flex:1; }
+    .window-button { width:40px; height:37px; border:0; color:var(--muted); background:transparent; cursor:pointer; -webkit-app-region:no-drag; }
+    .window-button:hover { color:var(--text); background:rgba(255,255,255,.08); }
+    .window-button.quit:hover { background:#a43e35; }
+    .content { min-height:0; overflow:auto; padding:9px; }
+    .hint { margin:0 0 8px; color:var(--muted); font-size:10px; line-height:1.4; }
+    .plans { display:grid; gap:6px; }
+    .plan { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:7px; padding:9px; border:1px solid rgba(217,197,255,.42); border-radius:7px; background:rgba(217,197,255,.055); }
+    .plan.focused { border-color:#ffe35a; background:rgba(255,227,90,.11); box-shadow:0 0 13px rgba(255,227,90,.3); }
+    .target { overflow:hidden; font-size:13px; font-weight:900; white-space:nowrap; text-overflow:ellipsis; }
+    .values { margin-top:4px; color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums; }
+    .chip { align-self:start; min-width:36px; padding:3px 5px; border:1px solid; border-radius:999px; text-align:center; font-size:10px; font-weight:850; }
+    .chip.gun-a { color:var(--left); border-color:rgba(91,160,255,.7); background:rgba(91,160,255,.13); }
+    .chip.gun-b { color:var(--right); border-color:rgba(255,119,83,.7); background:rgba(255,119,83,.13); }
+    .plan-actions { display:grid; gap:5px; justify-items:end; }
+    .destroy { padding:3px 6px; border:1px solid rgba(255,118,100,.76); border-radius:4px; color:#ffb2a7; background:rgba(170,45,36,.18); font:800 10px/1 Inter,"PingFang SC",sans-serif; cursor:pointer; }
+    .destroy:hover { color:#fff; background:rgba(198,60,46,.6); }
+    .empty { display:grid; min-height:110px; place-items:center; color:var(--muted); font-size:13px; text-align:center; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="titlebar" data-tauri-drag-region>
+      <span class="mark"></span><span class="title">总射击计划</span><span id="count" class="count">0 项</span><span class="spacer"></span>
+      <button id="hide" class="window-button" type="button" data-tauri-drag-region="false" title="隐藏（Esc）">−</button>
+      <button id="quit" class="window-button quit" type="button" data-tauri-drag-region="false" title="退出程序">×</button>
+    </div>
+    <section class="content">
+      <p class="hint">只读显示；请在炮控地图中编辑、排序或发送计划。</p>
+      <div id="plans" class="plans"><div class="empty">暂无总射击计划</div></div>
+    </section>
+  </main>
+  <script src="src/shared/tauri-bridge.js"></script>
+  <script>
+    const plans = document.querySelector('#plans');
+    const count = document.querySelector('#count');
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
+
+    function render(items) {
+      const safeItems = Array.isArray(items) ? items : [];
+      count.textContent = `${safeItems.length} 项`;
+      plans.innerHTML = safeItems.length ? safeItems.map((item, index) => {
+        const left = item.gunId === 'gun-a';
+        const label = left ? '左炮' : '右炮';
+        const totTiming = item.totMissionId ? ` · TOT#${item.totMissionId} T+${Number(item.totFireAtSec).toFixed(1)}s` : '';
+        const interceptTiming = item.interceptMissionId ? ` · 拦截#${item.interceptMissionId} ${item.interceptFireTime ? `T=${escapeHtml(item.interceptFireTime)}` : `T+${Number(item.interceptFireAtSec).toFixed(1)}s`}` : '';
+        const destroy = item.targetId != null ? `<button class="destroy" type="button" data-destroy-target="${escapeHtml(item.targetId)}">摧毁</button>` : '';
+        const coordinate = item.targetCoordinate || item.interceptCoordinate || '';
+        return `<article class="plan${item.focused ? ' focused' : ''}"><div><div class="target">${index + 1}. ${escapeHtml(item.targetLabel)}${coordinate ? ` · ${escapeHtml(coordinate)}` : ''}</div><div class="values">${Number(item.bearingDeg).toFixed(1)}° · ${Number(item.elevationDeg).toFixed(2)}° · ${item.charge}号药 · ${item.flightTimeSec}s · ${escapeHtml(item.shellType)}${totTiming}${interceptTiming}</div></div><div class="plan-actions"><span class="chip ${left ? 'gun-a' : 'gun-b'}">${label}</span>${destroy}</div></article>`;
+      }).join('') : '<div class="empty">暂无总射击计划</div>';
+    }
+
+    document.querySelector('#hide').addEventListener('click', () => window.overlay.hide());
+    document.querySelector('#quit').addEventListener('click', () => window.overlay.quit());
+    plans.addEventListener('click', event => {
+      const button = event.target.closest('[data-destroy-target]');
+      if (!button) return;
+      window.masterPlan.destroyTarget(button.dataset.destroyTarget);
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') window.overlay.hide(); });
+    window.masterPlan.onUpdate(render);
+    window.masterPlan.get().then(render);
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">蓝色自定义标记 9</title>
+  <path d="M32 7c-12.7 0-23 9.5-23 21.3 0 9.5 6.6 17.5 15.8 20.3L32 62l7.2-13.4C48.4 45.8 55 37.8 55 28.3 55 16.5 44.7 7 32 7Z" fill="#7fc6dc" stroke="#315f6d" stroke-width="1.8"/>
+    <g fill="none" stroke="#315f6d" stroke-width="1.7" stroke-linecap="round"><path d="M19 18h26l-4-7H23Z"/><path d="M28 11 39 2M34 11 46 3"/><path d="M23 14 14 9m27 5 9-5"/></g>
+    <text x="32" y="36" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#111">9</text>
+</svg>

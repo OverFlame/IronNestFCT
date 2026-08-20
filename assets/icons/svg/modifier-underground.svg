@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 24" role="img" aria-labelledby="title">
+  <title id="title">地下修饰符</title>
+  <path d="M8 22V8l14-6 10 5 10-5 14 6v14" fill="none" stroke="#486a25" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M9 9l13-5 10 5 10-5 13 5" fill="none" stroke="#78d54c" stroke-width="2"/>
+</svg>

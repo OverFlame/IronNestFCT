@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">绿色自定义标记 D</title>
+  <path d="M32 7c-12.7 0-23 9.5-23 21.3 0 9.5 6.6 17.5 15.8 20.3L32 62l7.2-13.4C48.4 45.8 55 37.8 55 28.3 55 16.5 44.7 7 32 7Z" fill="#58ef3c" stroke="#267d27" stroke-width="1.8"/>
+    <path d="M20 16V5m0 2c8 4 14-3 24 1-8 8-16 2-24 5" fill="none" stroke="#237f24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="32" y="36" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#111">D</text>
+</svg>

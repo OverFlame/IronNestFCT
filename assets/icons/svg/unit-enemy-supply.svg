@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">敌军补给仓库</title>
+  <path d="M32 5 59 32 32 59 5 32Z" fill="#ef7e70" stroke="#71372f" stroke-width="2"/>
+
+  <path d="M28 5V0h8v5" fill="#20251f"/>
+  <path d="M23 42V28l3-5h12l3 5v14M27 42V30h10v12M30 30v-4h4v4" fill="none" stroke="#20251f" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M20 43h24" stroke="#20251f" stroke-width="2"/>
+</svg>

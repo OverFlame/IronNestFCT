@@ -1,0 +1,308 @@
+{
+  "version": 1,
+  "icons": [
+    {
+      "id": "unit-friendly",
+      "title": "友军单位",
+      "category": "单位图例",
+      "filename": "unit-friendly.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy",
+      "title": "敌军单位",
+      "category": "单位图例",
+      "filename": "unit-enemy.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-friendly-infantry",
+      "title": "友军步兵",
+      "category": "单位图例",
+      "filename": "unit-friendly-infantry.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy-infantry",
+      "title": "敌军步兵",
+      "category": "单位图例",
+      "filename": "unit-enemy-infantry.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-friendly-recon",
+      "title": "友军侦察",
+      "category": "单位图例",
+      "filename": "unit-friendly-recon.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy-recon",
+      "title": "敌军侦察",
+      "category": "单位图例",
+      "filename": "unit-enemy-recon.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-friendly-artillery",
+      "title": "友军炮兵",
+      "category": "单位图例",
+      "filename": "unit-friendly-artillery.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy-artillery",
+      "title": "敌军炮兵",
+      "category": "单位图例",
+      "filename": "unit-enemy-artillery.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-friendly-mechanized",
+      "title": "友军机械化部队",
+      "category": "单位图例",
+      "filename": "unit-friendly-mechanized.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy-mechanized",
+      "title": "敌军机械化部队",
+      "category": "单位图例",
+      "filename": "unit-enemy-mechanized.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "map-reference-point",
+      "title": "参考点",
+      "category": "地图符号",
+      "filename": "map-reference-point.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "modifier-underground",
+      "title": "地下修饰符",
+      "category": "单位上方修饰符",
+      "filename": "modifier-underground.svg",
+      "viewBox": "0 0 64 24",
+      "role": "modifier",
+      "placement": "above",
+      "previewBase": "unit-enemy-artillery.svg"
+    },
+    {
+      "id": "modifier-high-priority",
+      "title": "高优先级修饰符",
+      "category": "单位上方修饰符",
+      "filename": "modifier-high-priority.svg",
+      "viewBox": "0 0 64 24",
+      "role": "modifier",
+      "placement": "above",
+      "previewBase": "unit-enemy-artillery.svg"
+    },
+    {
+      "id": "modifier-building",
+      "title": "建筑物修饰符",
+      "category": "单位上方修饰符",
+      "filename": "modifier-building.svg",
+      "viewBox": "0 0 64 24",
+      "role": "modifier",
+      "placement": "above",
+      "previewBase": "unit-enemy-artillery.svg"
+    },
+    {
+      "id": "unit-enemy-fdc",
+      "title": "敌军炮兵指挥官",
+      "category": "特种单位",
+      "filename": "unit-enemy-fdc.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "unit-enemy-supply",
+      "title": "敌军补给仓库",
+      "category": "特种单位",
+      "filename": "unit-enemy-supply.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-1",
+      "title": "红色自定义标记 1",
+      "category": "自定义标记",
+      "filename": "marker-red-1.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-2",
+      "title": "红色自定义标记 2",
+      "category": "自定义标记",
+      "filename": "marker-red-2.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-3",
+      "title": "红色自定义标记 3",
+      "category": "自定义标记",
+      "filename": "marker-red-3.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-4",
+      "title": "红色自定义标记 4",
+      "category": "自定义标记",
+      "filename": "marker-red-4.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-5",
+      "title": "红色自定义标记 5",
+      "category": "自定义标记",
+      "filename": "marker-red-5.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-6",
+      "title": "红色自定义标记 6",
+      "category": "自定义标记",
+      "filename": "marker-red-6.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-7",
+      "title": "红色自定义标记 7",
+      "category": "自定义标记",
+      "filename": "marker-red-7.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-8",
+      "title": "红色自定义标记 8",
+      "category": "自定义标记",
+      "filename": "marker-red-8.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-9",
+      "title": "红色自定义标记 9",
+      "category": "自定义标记",
+      "filename": "marker-red-9.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-red-10",
+      "title": "红色自定义标记 10",
+      "category": "自定义标记",
+      "filename": "marker-red-10.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-green-a",
+      "title": "绿色自定义标记 A",
+      "category": "自定义标记",
+      "filename": "marker-green-a.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-green-b",
+      "title": "绿色自定义标记 B",
+      "category": "自定义标记",
+      "filename": "marker-green-b.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-green-c",
+      "title": "绿色自定义标记 C",
+      "category": "自定义标记",
+      "filename": "marker-green-c.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-green-d",
+      "title": "绿色自定义标记 D",
+      "category": "自定义标记",
+      "filename": "marker-green-d.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-green-e",
+      "title": "绿色自定义标记 E",
+      "category": "自定义标记",
+      "filename": "marker-green-e.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-1",
+      "title": "蓝色自定义标记 1",
+      "category": "自定义标记",
+      "filename": "marker-blue-1.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-2",
+      "title": "蓝色自定义标记 2",
+      "category": "自定义标记",
+      "filename": "marker-blue-2.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-3",
+      "title": "蓝色自定义标记 3",
+      "category": "自定义标记",
+      "filename": "marker-blue-3.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-4",
+      "title": "蓝色自定义标记 4",
+      "category": "自定义标记",
+      "filename": "marker-blue-4.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-5",
+      "title": "蓝色自定义标记 5",
+      "category": "自定义标记",
+      "filename": "marker-blue-5.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-6",
+      "title": "蓝色自定义标记 6",
+      "category": "自定义标记",
+      "filename": "marker-blue-6.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-7",
+      "title": "蓝色自定义标记 7",
+      "category": "自定义标记",
+      "filename": "marker-blue-7.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-8",
+      "title": "蓝色自定义标记 8",
+      "category": "自定义标记",
+      "filename": "marker-blue-8.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-9",
+      "title": "蓝色自定义标记 9",
+      "category": "自定义标记",
+      "filename": "marker-blue-9.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "marker-blue-10",
+      "title": "蓝色自定义标记 10",
+      "category": "自定义标记",
+      "filename": "marker-blue-10.svg",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "id": "iron-nest",
+      "title": "铁巢本体俯视图标",
+      "category": "铁巢本体",
+      "filename": "iron-nest.svg",
+      "viewBox": "0 0 128 128"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "铁巢炮控终端",
+  "version": "2.9.1",
+  "identifier": "com.ironnest.artilleryoverlay",
+  "build": {
+    "beforeDevCommand": "npm run prepare:tauri",
+    "beforeBuildCommand": "npm run prepare:tauri",
+    "frontendDist": "../tauri-dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "map",
+        "title": "铁巢炮控地图",
+        "url": "src/renderer/map.html",
+        "width": 1280,
+        "height": 760,
+        "minWidth": 1050,
+        "minHeight": 600,
+        "resizable": true,
+        "focus": true,
+        "visible": false,
+        "decorations": true,
+        "skipTaskbar": false,
+        "alwaysOnTop": false,
+        "backgroundColor": "#090e0b"
+      },
+      {
+        "label": "plan",
+        "title": "铁巢总射击计划",
+        "url": "overlay.html",
+        "width": 440,
+        "height": 560,
+        "minWidth": 360,
+        "minHeight": 360,
+        "maxWidth": 620,
+        "maxHeight": 900,
+        "resizable": true,
+        "maximizable": false,
+        "focus": false,
+        "visible": false,
+        "decorations": false,
+        "skipTaskbar": true,
+        "alwaysOnTop": true,
+        "backgroundColor": "#0b100d"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      }
+    }
+  }
+}

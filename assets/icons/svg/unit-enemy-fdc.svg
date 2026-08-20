@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">敌军炮兵指挥官</title>
+  <path d="M32 5 59 32 32 59 5 32Z" fill="#ef7e70" stroke="#71372f" stroke-width="2"/>
+
+  <path d="M28 5V0h8v5" fill="#20251f"/>
+  <text x="32" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="700" fill="#20251f">FDC</text>
+  <path d="M32 26 24 39h16Z" fill="none" stroke="#20251f" stroke-width="1.7"/>
+  <circle cx="32" cy="33" r="2" fill="#20251f"/>
+  <path d="M32 41v8m-5-4 5 5 5-5" fill="none" stroke="#20251f" stroke-width="1.7" stroke-linecap="round"/>
+</svg>
