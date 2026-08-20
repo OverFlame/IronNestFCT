@@ -55,6 +55,26 @@ npm run build      # Windows NSIS installer
 - **Time-sensitive priority preemption queue**: pending tasks are ordered by (fire deadline, priority) ascending; only **not-yet-started** tasks are reordered, and tasks already loading/aiming/firing are not interrupted.
 - The original in-game detailed FCS UI (IMGUI) is **left blank for now**; status is shown by the external terminal.
 
+### Internal mod deployment (Windows release)
+
+Like the reference mod, **end users do not need to edit `GameDir` or recompile**: the developer packages once on Windows into a three-folder release ZIP, and users just extract it into the game root.
+
+```powershell
+# Run on Windows (internal mod packaging):
+cd internal
+.\打包.bat                  # auto-detect the game directory
+# or pass it explicitly:
+powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steamapps\common\Iron Nest Heavy Turret Simulator"
+```
+
+The artifact `artifacts/release-v<version>/IronNestFCT_internal_v<version>.zip` contains three folders:
+
+- `Mods/IronNestFCS.dll` (host mod)
+- `UserLibs/IronNestFCS.Abstractions.dll` (ABI contract)
+- `UserData/IronNestFCS/IronNestFCS.Logic.dll` (fire-control logic)
+
+Users extract the ZIP and merge the `Mods` / `UserData` / `UserLibs` folders into the game root.
+
 ## Sources and acknowledgments
 
 This project combines **external + internal fire control** and references and credits the following resources:

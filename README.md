@@ -53,6 +53,26 @@ npm run build      # Windows NSIS 安装包
 - **时间敏感优先级抢占队列**：Pending 任务按（开火截止时刻，优先级）升序排列；仅重排**未开始**的任务，已开始装填/瞄准/击发的任务不打断。
 - 游戏内原详细火控 UI（IMGUI）**暂留空**，状态显示由外部终端呈现。
 
+### 内部 Mod 部署（Windows 发布）
+
+与参考 Mod 一致，**终端用户无需改 `GameDir`、无需重新编译**：开发者在 Windows 上打包一次，产出含三个文件夹的 release zip，用户解压合并进游戏根目录即可。
+
+```powershell
+# 在 Windows 上执行（内部 Mod 打包）：
+cd internal
+.\打包.bat                  # 自动探测游戏目录
+# 或显式指定游戏目录：
+powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steamapps\common\Iron Nest Heavy Turret Simulator"
+```
+
+产物 `artifacts/release-v<版本>/IronNestFCT_internal_v<版本>.zip` 内含三个文件夹：
+
+- `Mods/IronNestFCS.dll`（宿主 Mod）
+- `UserLibs/IronNestFCS.Abstractions.dll`（契约程序集）
+- `UserData/IronNestFCS/IronNestFCS.Logic.dll`（火控逻辑）
+
+用户只需解压 zip，把 `Mods` / `UserData` / `UserLibs` 三个文件夹合并进游戏根目录。
+
 ## 来源与鸣谢
 
 本工程是**外部火控 + 内部火控**的结合项目，分别引用并鸣谢以下资源：
