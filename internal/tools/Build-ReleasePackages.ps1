@@ -61,6 +61,18 @@ function Resolve-GameDir {
 
 $GameDir = Resolve-GameDir -Explicit $GameDir
 
+# MelonLoader must have generated the unhollowed game assemblies on first launch.
+$Il2CppAssemblyMarker = Join-Path $GameDir "MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll"
+if (-not (Test-Path $Il2CppAssemblyMarker)) {
+    throw @"
+MelonLoader is installed, but the unhollowed game assemblies are missing:
+  $Il2CppAssemblyMarker
+
+Launch the game ONCE with MelonLoader installed (it generates the Il2CppAssemblies
+folder from the game's IL2CPP code), then run this script again.
+"@
+}
+
 # Build only the three fire-control projects. The unrelated CustomRecords record-player
 # mod has been removed from this fork and is not part of the internal mod release.
 $AbstractionsProject = Join-Path $RepoRoot "IronNestFCS.Abstractions\IronNestFCS.Abstractions.csproj"
