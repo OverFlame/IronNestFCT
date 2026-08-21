@@ -94,6 +94,7 @@ powershell -File tools\Build-ReleasePackages.ps1 -GameDir "D:\SteamLibrary\steam
 两种方式的产物均为 `IronNestFCT.exe`：
 - 目标机器需 WebView2 运行时（Windows 10/11 已随 Edge 预装）。
 - 前端资源在编译期内嵌，运行时无需 `tauri-dist/` 目录。
+- exe 图标为自定义金色准星（非游戏素材），已提交在 `src-tauri/icons/`；换图标时运行 `node scripts/generate-icons.js` 重新生成。
 
 ## 来源与鸣谢
 
